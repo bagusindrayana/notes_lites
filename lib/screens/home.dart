@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:notes_lite/db/database_provider.dart';
 import 'package:notes_lite/models/note_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,6 +56,10 @@ class _HomeState extends State<Home> {
                   itemBuilder: (context, index) {
                     NoteModel data = noteData.data![index];
                     String title = data.title;
+                    var myJSON = jsonDecode(data.body!);
+                    var qc = QuillController(
+                        document: Document.fromJson(myJSON),
+                        selection: TextSelection.collapsed(offset: 0));
                     String? body = data.body;
                     String createdAt = data.createdAt;
                     int id = data.id!;
@@ -71,7 +78,7 @@ class _HomeState extends State<Home> {
                               Navigator.pushNamed(context, '/form-note', arguments: data);
                             },
                             title: Text(title,style:TextStyle(fontWeight: FontWeight.bold),),
-                            subtitle: Text(body.toString()),
+                            subtitle: Text(qc.document.toPlainText()),
                           ),),
                           Padding(padding: EdgeInsets.all(8),child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
