@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notes_lite/screens/form_note.dart';
 import 'package:notes_lite/screens/home.dart';
@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _isDark = false;
   ThemeData _light = ThemeData.light().copyWith(
-    primaryColor: Colors.blueAccent,
+    primaryColor: const Color(0xff43cfd5),
   );
   ThemeData _dark = ThemeData.dark().copyWith(
     primaryColor: Colors.blueGrey,

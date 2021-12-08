@@ -5,6 +5,7 @@ import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:intl/intl.dart';
 import 'package:notes_lite/db/database_provider.dart';
 import 'package:notes_lite/models/note_model.dart';
+import 'package:tuple/tuple.dart';
 
 class FormNote extends StatefulWidget {
   const FormNote({Key? key}) : super(key: key);
@@ -14,6 +15,8 @@ class FormNote extends StatefulWidget {
 }
 
 class _FormNoteState extends State<FormNote> {
+  final FocusNode _focusNode = FocusNode();
+
   String? title;
   String? body;
   DateTime? createdAt;
@@ -50,9 +53,34 @@ class _FormNoteState extends State<FormNote> {
         var myJSON = jsonDecode(body!);
         _controller = QuillController(
             document: Document.fromJson(myJSON),
-            selection: TextSelection.collapsed(offset: 0));
+            selection: TextSelection.collapsed(offset: 0)
+            );
       });
     }
+
+    var quillEditor = QuillEditor(
+        controller: _controller!,
+        scrollController: ScrollController(),
+        scrollable: true,
+        focusNode: _focusNode,
+        autoFocus: false,
+        readOnly: false,
+        placeholder: 'Add note...',
+        expands: false,
+        padding: EdgeInsets.zero,
+        customStyles: DefaultStyles(
+          h1: DefaultTextBlockStyle(
+              const TextStyle(
+                fontSize: 32,
+                color: Colors.black,
+                height: 1.15,
+                fontWeight: FontWeight.w300,
+              ),
+              const Tuple2(16, 0),
+              const Tuple2(0, 0),
+              null),
+          sizeSmall: const TextStyle(fontSize: 9),
+        ));
     return Scaffold(
       appBar: AppBar(
         title: Text('Save Note'),
@@ -85,7 +113,11 @@ class _FormNoteState extends State<FormNote> {
               ),
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
-            SingleChildScrollView(
+            Container(
+              height: 60,
+              child: Scrollbar(
+                isAlwaysShown: true,
+              child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Expanded(
                     child: Container(
@@ -96,11 +128,11 @@ class _FormNoteState extends State<FormNote> {
                     showAlignmentButtons: true,
                   ),
                 ))),
+              )
+            ),
+            Divider(thickness: 2,),
             Expanded(
-              child: QuillEditor.basic(
-                controller: _controller,
-                readOnly: false, // true for view only mode
-              ),
+              child:quillEditor,
             ),
             
           ],
