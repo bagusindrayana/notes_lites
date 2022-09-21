@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +67,7 @@ class _HomeState extends State<Home> {
                               var qc = QuillController(
                                   document: Document.fromJson(myJSON),
                                   selection:
-                                      TextSelection.collapsed(offset: 0));
+                                  TextSelection.collapsed(offset: 0));
                               String? body = data.body;
                               String createdAt = data.createdAt;
                               int id = data.id!;
@@ -100,14 +101,14 @@ class _HomeState extends State<Home> {
                                           ],
                                         ),
                                         subtitle:
-                                            Text(qc.document.toPlainText()),
+                                        Text(qc.document.toPlainText()),
                                       ),
                                     ),
                                     Padding(
                                       padding: EdgeInsets.all(8),
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                        MainAxisAlignment.start,
                                         children: <Widget>[
                                           Padding(
                                             padding: EdgeInsets.only(
@@ -174,8 +175,8 @@ class _HomeState extends State<Home> {
                   ),
                   // Text('Dark Mode'),
                   Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: CupertinoSwitch(
+                    padding: EdgeInsets.only(left: 20,right: 6),
+                    child: Switch(
                       activeColor: Colors.blue,
                       value: widget.isDark,
                       onChanged: (v) {
@@ -185,7 +186,8 @@ class _HomeState extends State<Home> {
                         });
                       },
                     ),
-                  )
+                  ),
+                  Text("Dark Theme")
                 ],
               ),
             ),
@@ -208,7 +210,7 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     DatabaseProvider.db.deleteAllNotes();
                     final snackBar =
-                        SnackBar(content: Text('All Notes Deleted!'));
+                    SnackBar(content: Text('All Notes Deleted!'));
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     Navigator.pushNamedAndRemoveUntil(
                         context, "/", (route) => false);

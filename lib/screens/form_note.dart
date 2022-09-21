@@ -78,6 +78,38 @@ class _FormNoteState extends State<FormNote> {
     super.initState();
   }
 
+
+  Future<bool> onWillPop() async {
+
+    if((titleController.text != "null" && titleController.text != null) && ((curNote! != null && curNote!.title != titleController.text) || curNote == null)){
+      return await showDialog(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Your notes are not saved'),
+            content: Text("Your notes haven't been saved, are you sure you want to go back?"),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+            ],
+          );
+        },
+      ) ?? false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     curNote = ModalRoute.of(context)!.settings.arguments as NoteModel?;
@@ -117,22 +149,22 @@ class _FormNoteState extends State<FormNote> {
               null),
           sizeSmall: const TextStyle(fontSize: 9),
         ));
-    return Scaffold(
+    return WillPopScope(child:Scaffold(
       appBar: AppBar(
         title: Text('Save Note'),
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
           (curNote != null)
               ? IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    DatabaseProvider.db.deleteNote(curNote!.id!);
-                    final snackBar = SnackBar(content: Text('Note Deleted!'));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/", (route) => false);
-                  },
-                )
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              DatabaseProvider.db.deleteNote(curNote!.id!);
+              final snackBar = SnackBar(content: Text('Note Deleted!'));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, "/", (route) => false);
+            },
+          )
               : Text("")
         ],
       ),
@@ -160,9 +192,9 @@ class _FormNoteState extends State<FormNote> {
                         controller: _scrollController,
                         scrollDirection: Axis.horizontal,
                         child: QuillToolbar.basic(
-                            controller: _controller,
-                            showAlignmentButtons: true,
-                          )),
+                          controller: _controller,
+                          showAlignmentButtons: true,
+                        )),
                   )),
               const Divider(
                 thickness: 2,
@@ -182,6 +214,6 @@ class _FormNoteState extends State<FormNote> {
         label: Text('Save Note'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-    );
+    ) , onWillPop: onWillPop);
   }
 }
