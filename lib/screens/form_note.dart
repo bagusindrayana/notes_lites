@@ -80,34 +80,45 @@ class _FormNoteState extends State<FormNote> {
 
 
   Future<bool> onWillPop() async {
+    var bodyJson = jsonEncode(_controller.document.toDelta().toJson());
 
-    if((titleController.text != "null" && titleController.text != null) && ((curNote! != null && curNote!.title != titleController.text) || curNote == null)){
-      return await showDialog(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Your notes are not saved'),
-            content: Text("Your notes haven't been saved, are you sure you want to go back?"),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Ok'),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-              ),
-              TextButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-              ),
-            ],
-          );
-        },
-      ) ?? false;
+
+    //jika menambah data baru dan title kosong
+    if(curNote == null && titleController.text == "" && titleController.text.isEmpty && _controller.document.isEmpty()){
+      return true;
     }
-    return true;
+
+
+    //jika mengubah data dan sama dengan data sebelumnya
+    if(curNote != null && titleController.text == curNote!.title && bodyJson == curNote!.body){
+      return true;
+    }
+
+
+    return await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Your notes are not saved'),
+          content: Text("Your notes haven't been saved, are you sure you want to go back?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ],
+        );
+      },
+    ) ?? false;
   }
 
   @override
